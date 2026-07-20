@@ -45,7 +45,7 @@ const MOCK_PATIENTS = [
 // Pre-booked appointments [slot → {patient, treatment}]
 const BOOKED_TODAY: Record<string, { patient: string; treatment: string }> = {
   '10:00': { patient: 'Maya Chen',      treatment: '60 Minute Massage' },
-  '13:00': { patient: 'Marcus Gregory', treatment: '45 Minute Massage' },
+  '13:00': { patient: 'Samuel Clark', treatment: '45 Minute Massage' },
 }
 
 /* ─────────────────────────────────────────────────────────────────
