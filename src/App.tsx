@@ -305,7 +305,7 @@ function BookingPanel({
 
         {/* Booking Info bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderTop: '1px solid #ebebeb', borderBottom: '1px solid #ebebeb', background: '#fafafa', flexShrink: 0 }}>
-          <span aria-hidden="true" style={{ fontSize: 18, color: '#aaa', fontWeight: 400 }}>Booking Info</span>
+          <span aria-hidden="true" style={{ fontSize: 18, color: '#555', fontWeight: 500 }}>Booking Info</span>
           <button
             aria-label="Book appointment"
             onClick={handleBook}
