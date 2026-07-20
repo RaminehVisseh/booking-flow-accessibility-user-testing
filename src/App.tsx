@@ -1,8 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   BurritoProvider,
-  Button,
-  PrimaryButton,
   vars,
 } from '@janeapp/burrito-design-system'
 import { JaneNavBar } from '../../jane-nav/src/components/JaneNavBar'
@@ -284,106 +282,108 @@ function BookingPanel({
           }
         }}
         style={{
-          width: 360, height: '100%',
+          width: 380, height: '100%',
           background: '#fff',
           display: 'flex', flexDirection: 'column',
           boxShadow: '-4px 0 24px rgba(0,0,0,0.16)',
           overflowY: 'auto',
         }}
       >
-        {/* Header */}
-        <div style={{ padding: '16px 16px 12px', borderBottom: '1px solid #e8e8e8', flexShrink: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
-            <h2
-              id="booking-panel-title"
-              ref={headingRef}
-              tabIndex={-1}
-              style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#222', outline: 'none' }}
-            >
-              New Appointment
-            </h2>
-            <button
-              aria-label="Close new appointment panel"
-              onClick={onClose}
-              style={{
-                background: 'none', border: '1px solid #ccc',
-                borderRadius: 6, width: 34, height: 34,
-                cursor: 'pointer', fontSize: 16, color: '#555',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >✕</button>
-          </div>
-          <p id="booking-panel-desc" style={{ margin: 0, fontSize: 13, color: '#666' }}>
-            {practitioner} · {dateLabel} · {formatHour(startHour)}
-          </p>
+        {/* Title row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 16px 14px' }}>
+          <h2
+            id="booking-panel-title"
+            ref={headingRef}
+            tabIndex={-1}
+            style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1a1a1a', outline: 'none' }}
+          >
+            New Appointment
+          </h2>
+          <button
+            aria-label="Close new appointment panel"
+            onClick={onClose}
+            style={{
+              background: '#f2f2f2', border: 'none',
+              borderRadius: 6, width: 32, height: 32,
+              cursor: 'pointer', fontSize: 15, color: '#555',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}
+          >✕</button>
         </div>
 
-        {/* Form */}
+        {/* Booking Info bar */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderTop: '1px solid #ebebeb', borderBottom: '1px solid #ebebeb', background: '#fafafa' }}>
+          <span style={{ fontSize: 18, color: '#aaa', fontWeight: 400 }}>Booking Info</span>
+          <button
+            onClick={handleBook}
+            style={{
+              background: TEAL, color: '#fff', border: 'none',
+              borderRadius: 6, padding: '9px 18px',
+              fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+            }}
+          >
+            Book Appointment
+          </button>
+        </div>
+
+        <p id="booking-panel-desc" style={srOnly}>{practitioner}, {dateLabel}, starting at {formatHour(startHour)}</p>
+
+        {/* Sections */}
         <div style={{ flex: 1, overflowY: 'auto' }}>
-          <fieldset style={{ border: 'none', padding: '16px', margin: 0 }}>
-            <legend style={srOnly}>Appointment details</legend>
 
-            {/* Session */}
-            <div style={{ marginBottom: 18 }}>
-              <label
-                htmlFor="treatment-select"
-                style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}
+          {/* Session */}
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb' }}>
+            <p style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 600, color: '#444' }}>Session</p>
+            <select
+              id="treatment-select"
+              ref={treatmentRef}
+              value={treatment}
+              onChange={e => handleTreatmentChange(e.target.value)}
+              style={{
+                width: '100%', padding: '10px 12px',
+                border: '1px solid #ddd', borderRadius: 8,
+                fontSize: 14, color: treatment ? '#222' : '#999',
+                background: '#fff', fontFamily: 'inherit', cursor: 'pointer',
+                appearance: 'auto',
+              }}
+            >
+              <option value="">Select a session...</option>
+              {eligibleTreatments.map(t => (
+                <option key={t.id} value={t.id}>{t.label}</option>
+              ))}
+            </select>
+            {eligibleTreatments.length === 0 && (
+              <p role="alert" style={{ margin: '6px 0 0', fontSize: 13, color: '#c00' }}>No sessions fit this time slot.</p>
+            )}
+          </div>
+
+          {/* Client */}
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb', position: 'relative' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#444' }}>Client</p>
+              <button
+                type="button"
+                onClick={() => { setPatient('New Patient'); setPatientQuery('') }}
+                style={{ fontSize: 13, padding: '4px 12px', border: '1px solid #ccc', borderRadius: 20, background: '#fff', cursor: 'pointer', color: '#333', fontFamily: 'inherit' }}
               >
-                Session
-              </label>
-              <select
-                id="treatment-select"
-                ref={treatmentRef}
-                value={treatment}
-                onChange={e => handleTreatmentChange(e.target.value)}
-                style={{
-                  width: '100%', padding: '9px 12px',
-                  border: '1px solid #ccc', borderRadius: 6,
-                  fontSize: 14, color: treatment ? '#222' : '#999',
-                  background: '#fff', fontFamily: 'inherit', cursor: 'pointer',
-                }}
-              >
-                <option value="">Select a session…</option>
-                {eligibleTreatments.map(t => (
-                  <option key={t.id} value={t.id}>{t.label}</option>
-                ))}
-              </select>
-              {eligibleTreatments.length === 0 && (
-                <p role="alert" style={{ margin: '6px 0 0', fontSize: 13, color: '#c00' }}>
-                  No sessions fit this time slot.
-                </p>
-              )}
+                New Client
+              </button>
             </div>
-
-            {/* Client */}
-            <div style={{ marginBottom: 18, position: 'relative' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                <label
-                  htmlFor="patient-search"
-                  style={{ fontSize: 12, fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                >
-                  Client
-                </label>
+            {patient ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: '#f0faf9', border: `1px solid ${TEAL}`, borderRadius: 6, fontSize: 14 }}>
+                <span style={{ fontWeight: 600, color: '#222' }}>{patient}</span>
                 <button
                   type="button"
-                  onClick={() => { setPatient('New Patient'); setPatientQuery('') }}
-                  style={{ fontSize: 12, padding: '3px 10px', border: '1px solid #ccc', borderRadius: 4, background: '#fff', cursor: 'pointer', color: '#555', fontFamily: 'inherit' }}
-                >
-                  New Client
-                </button>
+                  aria-label={`Remove ${patient}`}
+                  onClick={() => { setPatient(''); setPatientQuery('') }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: 16, padding: 0 }}
+                >✕</button>
               </div>
-              {patient ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: '#f0faf9', border: `1px solid ${TEAL}`, borderRadius: 6, fontSize: 14 }}>
-                  <span style={{ fontWeight: 600, color: '#222' }}>{patient}</span>
-                  <button
-                    type="button"
-                    aria-label={`Remove ${patient}`}
-                    onClick={() => { setPatient(''); setPatientQuery('') }}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: 16, padding: 0, lineHeight: 1 }}
-                  >✕</button>
-                </div>
-              ) : (
-                <>
+            ) : (
+              <>
+                <label htmlFor="patient-search" style={{ display: 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
+                <div style={{ position: 'relative' }}>
+                  <span aria-hidden="true" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 14 }}>🔍</span>
                   <input
                     id="patient-search"
                     type="search"
@@ -391,7 +391,7 @@ function BookingPanel({
                     aria-autocomplete="list"
                     aria-controls={patientMatches.length > 0 ? 'patient-suggestions' : undefined}
                     aria-expanded={patientMatches.length > 0}
-                    placeholder="Search by name…"
+                    placeholder="Add Client..."
                     value={patientQuery}
                     onChange={e => setPatientQuery(e.target.value)}
                     onKeyDown={e => {
@@ -404,90 +404,95 @@ function BookingPanel({
                         setPatient(patientMatches[0]); setPatientQuery('')
                       }
                     }}
-                    style={{ width: '100%', padding: '9px 12px', boxSizing: 'border-box', border: '1px solid #ccc', borderRadius: 6, fontSize: 14, fontFamily: 'inherit' }}
+                    style={{ width: '100%', padding: '9px 12px 9px 32px', boxSizing: 'border-box', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, fontFamily: 'inherit' }}
                   />
-                  {patientMatches.length > 0 && (
-                    <ul
-                      id="patient-suggestions"
-                      role="listbox"
-                      aria-label="Client suggestions"
-                      style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 200, background: '#fff', border: '1px solid #ccc', borderRadius: 6, marginTop: 2, padding: 0, listStyle: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', maxHeight: 200, overflowY: 'auto' }}
-                    >
-                      {patientMatches.map((name, idx) => (
-                        <li
-                          key={name}
-                          role="option"
-                          tabIndex={-1}
-                          aria-selected={false}
-                          onClick={() => { setPatient(name); setPatientQuery('') }}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPatient(name); setPatientQuery('') }
-                            else if (e.key === 'ArrowDown') { e.preventDefault(); document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx + 1]?.focus() }
-                            else if (e.key === 'ArrowUp') { e.preventDefault(); idx === 0 ? document.getElementById('patient-search')?.focus() : document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx - 1]?.focus() }
-                            else if (e.key === 'Escape') setPatientQuery('')
-                          }}
-                          style={{ padding: '9px 14px', cursor: 'pointer', fontSize: 14, color: '#222', outline: 'none' }}
-                          onMouseEnter={e => (e.currentTarget.style.background = '#f0faf9')}
-                          onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
-                        >
-                          {name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {patientQuery.length >= 2 && patientMatches.length === 0 && (
-                    <p role="status" style={{ fontSize: 13, color: '#888', fontStyle: 'italic', margin: '6px 0 0' }}>
-                      No clients found for "{patientQuery}"
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
+                </div>
+                {patientMatches.length > 0 && (
+                  <ul
+                    id="patient-suggestions"
+                    role="listbox"
+                    aria-label="Client suggestions"
+                    style={{ position: 'absolute', left: 16, right: 16, zIndex: 200, background: '#fff', border: '1px solid #ccc', borderRadius: 6, marginTop: 2, padding: 0, listStyle: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', maxHeight: 200, overflowY: 'auto' }}
+                  >
+                    {patientMatches.map((name, idx) => (
+                      <li
+                        key={name}
+                        role="option"
+                        tabIndex={-1}
+                        aria-selected={false}
+                        onClick={() => { setPatient(name); setPatientQuery('') }}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPatient(name); setPatientQuery('') }
+                          else if (e.key === 'ArrowDown') { e.preventDefault(); document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx + 1]?.focus() }
+                          else if (e.key === 'ArrowUp') { e.preventDefault(); idx === 0 ? document.getElementById('patient-search')?.focus() : document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx - 1]?.focus() }
+                          else if (e.key === 'Escape') setPatientQuery('')
+                        }}
+                        style={{ padding: '9px 14px', cursor: 'pointer', fontSize: 14, color: '#222', outline: 'none' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#f0faf9')}
+                        onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
+                      >
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {patientQuery.length >= 2 && patientMatches.length === 0 && (
+                  <p role="status" style={{ fontSize: 13, color: '#888', fontStyle: 'italic', margin: '6px 0 0' }}>No clients found for "{patientQuery}"</p>
+                )}
+                {!patient && patientQuery.length === 0 && (
+                  <p style={{ fontSize: 13, color: '#aaa', fontStyle: 'italic', margin: '8px 0 0' }}>No client selected...</p>
+                )}
+              </>
+            )}
+          </div>
 
-            {/* Time — read-only, pre-filled from slot */}
-            <div style={{ marginBottom: 18 }}>
-              <p style={{ fontSize: 12, fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>
-                Time
-              </p>
-              <p style={{ margin: 0, fontSize: 14, color: '#333' }}>
-                {formatHour(startHour)}{endHour !== null ? ` to ${formatHour(endHour)}` : ''}
-                {endHour === null && <span style={{ color: '#888' }}> — select a session to see end time</span>}
-              </p>
-              <p style={{ margin: '2px 0 0', fontSize: 13, color: '#666' }}>{dateLabel}</p>
-            </div>
+          {/* Packages & Memberships */}
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: '#444' }}>Packages &amp; Memberships</p>
+            <p style={{ margin: 0, fontSize: 14, color: '#555' }}>No Packages/Memberships</p>
+          </div>
 
-            {/* Staff — pre-filled */}
-            <div style={{ marginBottom: 18 }}>
-              <p style={{ fontSize: 12, fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>
-                Staff Member
-              </p>
-              <p style={{ margin: 0, fontSize: 14, color: '#333' }}>{practitioner}</p>
-            </div>
+          {/* Time */}
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb' }}>
+            <p style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 600, color: '#444' }}>Time</p>
+            <select
+              aria-label="Start time"
+              value={String(startHour)}
+              onChange={() => {}}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, background: '#fff', fontFamily: 'inherit', cursor: 'pointer', marginBottom: 8, appearance: 'auto' }}
+            >
+              <option value={String(startHour)}>{formatHour(startHour)}</option>
+            </select>
+            <p style={{ margin: 0, fontSize: 14, color: '#333' }}>
+              {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} {formatHour(startHour)}{endHour !== null ? ` - ${formatHour(endHour)}` : ''}
+              {endHour === null && <span style={{ color: '#aaa' }}> - select a session</span>}
+            </p>
+          </div>
 
-            {/* Notes */}
-            <div style={{ marginBottom: 8 }}>
-              <label
-                htmlFor="appt-notes"
-                style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}
-              >
-                Notes
-              </label>
-              <textarea
-                id="appt-notes"
-                value={notes}
-                onChange={e => setNotes(e.target.value)}
-                placeholder="Add a note…"
-                rows={3}
-                style={{ width: '100%', boxSizing: 'border-box', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 6, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', color: '#333' }}
-              />
-            </div>
-          </fieldset>
-        </div>
+          {/* Staff Member */}
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: '#444' }}>Staff Member</p>
+            <p style={{ margin: 0, fontSize: 14, color: '#333' }}>{practitioner}</p>
+          </div>
 
-        {/* Footer */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, padding: '12px 16px', borderTop: '1px solid #e8e8e8', background: '#fff', flexShrink: 0 }}>
-          <Button onClick={onClose}>Cancel</Button>
-          <PrimaryButton onClick={handleBook}>Book Appointment</PrimaryButton>
+          {/* Resources */}
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb' }}>
+            <p style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: '#444' }}>Resources</p>
+            <p style={{ margin: 0, fontSize: 14, color: '#555' }}>No resources required</p>
+          </div>
+
+          {/* Notes */}
+          <div style={{ padding: '14px 16px' }}>
+            <label htmlFor="appt-notes" style={{ display: 'block', fontSize: 15, fontWeight: 600, color: '#444', marginBottom: 8 }}>Notes</label>
+            <textarea
+              id="appt-notes"
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              rows={4}
+              style={{ width: '100%', boxSizing: 'border-box', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', color: '#333' }}
+            />
+          </div>
+
         </div>
       </div>
     </div>
