@@ -238,13 +238,7 @@ function BookingPanel({
   })
 
   return (
-    <div
-      style={{
-        position: 'fixed', top: 0, right: 0, bottom: 0,
-        zIndex: 500,
-        display: 'flex', justifyContent: 'flex-end',
-      }}
-    >
+    <>
       {/* Always-rendered assertive live region — JAWS needs it in DOM before content fires */}
       <div role="status" aria-live="assertive" aria-atomic="true" style={srOnly}>
         {announcement}
@@ -280,10 +274,10 @@ function BookingPanel({
           }
         }}
         style={{
-          width: 380, height: '100%',
+          width: 380, flexShrink: 0,
           background: '#fff',
           display: 'flex', flexDirection: 'column',
-          boxShadow: '-4px 0 24px rgba(0,0,0,0.16)',
+          borderLeft: '1px solid #e0e0e0',
           overflow: 'hidden',
         }}
       >
@@ -514,7 +508,7 @@ function BookingPanel({
         </div>
 
       </div>
-    </div>
+    </>
   )
 }
 
@@ -753,7 +747,7 @@ function DayView() {
       </nav>
 
       {/* Main content */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', background: '#f0f1f2' }}>
         <main
           id="day-grid"
           tabIndex={-1}
@@ -888,21 +882,21 @@ function DayView() {
             onClose={() => setConfirmedAppt(null)}
           />
         )}
-      </div>
 
-      {bookingHour !== null && (
-        <BookingPanel
-          practitioner={practitioner}
-          startHour={bookingHour}
-          availableUntil={bookingAvailableUntil ?? HOUR_END}
-          date={currentDay}
-          bookedRanges={bookedRanges}
-          onClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
-          onBook={handleBook}
-          onOverlapClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
-          triggerRef={activeSlotRef}
-        />
-      )}
+        {bookingHour !== null && (
+          <BookingPanel
+            practitioner={practitioner}
+            startHour={bookingHour}
+            availableUntil={bookingAvailableUntil ?? HOUR_END}
+            date={currentDay}
+            bookedRanges={bookedRanges}
+            onClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
+            onBook={handleBook}
+            onOverlapClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
+            triggerRef={activeSlotRef}
+          />
+        )}
+      </div>
     </div>
   )
 }
