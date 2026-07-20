@@ -647,16 +647,6 @@ function DayView() {
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>{successAnnouncement}</div>
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>{pickerAnnouncement}</div>
 
-      {/* Skip link */}
-      <a
-        href="#day-grid"
-        style={{ position: 'absolute', top: -100, left: 8, zIndex: 1000, background: TEAL, color: '#fff', padding: '8px 16px', borderRadius: 4, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}
-        onFocus={e => { e.currentTarget.style.top = '8px' }}
-        onBlur={e => { e.currentTarget.style.top = '-100px' }}
-      >
-        Skip to schedule
-      </a>
-
       {/* Date nav */}
       <nav aria-label="Date navigation" style={{ background: '#fff', borderBottom: '1px solid #e2e2e2', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
         <button
