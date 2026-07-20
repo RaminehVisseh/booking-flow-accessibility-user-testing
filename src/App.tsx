@@ -787,7 +787,7 @@ function DayView() {
                   </div>
 
                   {/* Shift indicator */}
-                  <div aria-hidden="true" style={{ position: 'absolute', top: (SHIFT_START - HOUR_START) * ROW_HEIGHT, height: (SHIFT_END - SHIFT_START) * ROW_HEIGHT, left: 0, right: 0, background: '#D5E3E4', borderTop: '2px solid #D5E3E4', borderBottom: '2px solid #D5E3E4', pointerEvents: 'none', zIndex: 0 }} />
+                  <div aria-hidden="true" style={{ position: 'absolute', top: (SHIFT_START - HOUR_START) * ROW_HEIGHT, height: (SHIFT_END - SHIFT_START) * ROW_HEIGHT, left: 0, right: 0, background: '#D5E3E4', borderTop: '2px solid #b8cfd1', borderBottom: '2px solid #b8cfd1', pointerEvents: 'none', zIndex: 0 }} />
 
                   {/* Visual focus highlight */}
                   {focusedRange && (
