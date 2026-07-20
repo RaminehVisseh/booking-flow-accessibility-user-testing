@@ -641,7 +641,7 @@ function DayView() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', flexDirection: 'column', background: '#f4f4f4' }}>
+    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', background: '#f4f4f4', minHeight: 0 }}>
 
       {/* Always-rendered live regions — never toggled in/out so JAWS finds them */}
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>{successAnnouncement}</div>
@@ -656,13 +656,6 @@ function DayView() {
       >
         Skip to schedule
       </a>
-
-      {/* Header */}
-      <header style={{ background: TEAL, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <span style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>Jane</span>
-        <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13 }}>Booking Flow Accessibility — User Testing</span>
-        <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13 }}>{practitioner}</span>
-      </header>
 
       {/* Date nav */}
       <nav aria-label="Date navigation" style={{ background: '#fff', borderBottom: '1px solid #e2e2e2', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -811,7 +804,7 @@ function DayView() {
                     const dur = durationHours(appt.treatment)
                     const ci = colorMap[slot] ?? 0
                     return (
-                      <div key={slot} aria-hidden="true" style={{ position: 'absolute', top: (s - HOUR_START) * ROW_HEIGHT, height: dur * ROW_HEIGHT - 2, left: 2, right: 2, background: apptColors[ci], color: apptColorText[ci], borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.3, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }}>
+                      <div key={slot} aria-hidden="true" style={{ position: 'absolute', top: (s - HOUR_START) * ROW_HEIGHT, height: dur * ROW_HEIGHT - 2, left: 2, right: 2, background: apptColors[ci], color: apptColorText[ci], borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.3, overflow: 'hidden', pointerEvents: 'none', zIndex: 1, textAlign: 'left' }}>
                         <div style={{ fontWeight: 700 }}>{formatHour(s)} – {formatHour(s + dur)}</div>
                         <div>{appt.patient}</div>
                         <div style={{ opacity: 0.8 }}>{appt.treatment}</div>
@@ -901,8 +894,10 @@ function DayView() {
 export default function App() {
   return (
     <BurritoProvider>
-      <JaneNavBar activeNav="Day" navItems={NAV_ITEMS} />
-      <DayView />
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <JaneNavBar activeNav="Day" navItems={NAV_ITEMS} />
+        <DayView />
+      </div>
     </BurritoProvider>
   )
 }
