@@ -21,7 +21,7 @@ const NAV_ITEMS = [
  *  Constants
  * ───────────────────────────────────────────────────────────────── */
 
-const BASE_DATE = new Date(2026, 6, 13) // Monday July 13 2026
+const BASE_DATE = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
 const HOUR_START = 8
 const HOUR_END = 18
 const SHIFT_START = 9
