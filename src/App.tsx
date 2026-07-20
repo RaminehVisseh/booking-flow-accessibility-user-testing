@@ -894,7 +894,7 @@ function DayView() {
 export default function App() {
   return (
     <BurritoProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100vh', overflow: 'hidden' }}>
         <JaneNavBar activeNav="Day" navItems={NAV_ITEMS} />
         <DayView />
       </div>
