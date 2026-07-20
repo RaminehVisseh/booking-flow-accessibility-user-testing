@@ -286,7 +286,7 @@ function BookingPanel({
           background: '#fff',
           display: 'flex', flexDirection: 'column',
           boxShadow: '-4px 0 24px rgba(0,0,0,0.16)',
-          overflowY: 'auto',
+          overflow: 'hidden',
         }}
       >
         {/* Title row */}
@@ -312,9 +312,10 @@ function BookingPanel({
         </div>
 
         {/* Booking Info bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderTop: '1px solid #ebebeb', borderBottom: '1px solid #ebebeb', background: '#fafafa' }}>
-          <span style={{ fontSize: 18, color: '#aaa', fontWeight: 400 }}>Booking Info</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderTop: '1px solid #ebebeb', borderBottom: '1px solid #ebebeb', background: '#fafafa', flexShrink: 0 }}>
+          <span aria-hidden="true" style={{ fontSize: 18, color: '#aaa', fontWeight: 400 }}>Booking Info</span>
           <button
+            aria-label="Book appointment"
             onClick={handleBook}
             style={{
               background: TEAL, color: '#fff', border: 'none',
@@ -333,7 +334,7 @@ function BookingPanel({
 
           {/* Session */}
           <div style={{ padding: '14px 16px', borderBottom: '1px solid #ebebeb' }}>
-            <p style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 600, color: '#444' }}>Session</p>
+            <label htmlFor="treatment-select" style={{ display: 'block', margin: '0 0 8px', fontSize: 15, fontWeight: 600, color: '#444' }}>Session</label>
             <select
               id="treatment-select"
               ref={treatmentRef}
@@ -383,7 +384,10 @@ function BookingPanel({
               <>
                 <label htmlFor="patient-search" style={{ display: 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
                 <div style={{ position: 'relative' }}>
-                  <span aria-hidden="true" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 14 }}>🔍</span>
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', pointerEvents: 'none' }}>
+                    <circle cx="6" cy="6" r="4.5" stroke="#aaa" strokeWidth="1.5"/>
+                    <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="#aaa" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
                   <input
                     id="patient-search"
                     type="search"
@@ -494,6 +498,23 @@ function BookingPanel({
           </div>
 
         </div>
+
+        {/* Footer */}
+        <div style={{ display: 'flex', gap: 8, padding: '12px 16px', borderTop: '1px solid #ebebeb', background: '#fff', flexShrink: 0 }}>
+          <button
+            onClick={onClose}
+            style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#444' }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleBook}
+            style={{ flex: 2, padding: '10px', background: TEAL, color: '#fff', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+          >
+            Book Appointment
+          </button>
+        </div>
+
       </div>
     </div>
   )
