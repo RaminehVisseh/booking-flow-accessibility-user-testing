@@ -665,87 +665,6 @@ function DayView() {
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>{successAnnouncement}</div>
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>{pickerAnnouncement}</div>
 
-      {/* Date nav */}
-      <nav aria-label="Date navigation" style={{ background: '#fff', borderBottom: '1px solid #e2e2e2', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-        <button
-          aria-label={`Previous day, ${formatDayShort(addDays(BASE_DATE, dayOffset - 1))}`}
-          onClick={() => setDayOffset(d => d - 1)}
-          style={{ width: 32, height: 32, border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >‹</button>
-
-        <button
-          aria-label="Go to today"
-          onClick={() => setDayOffset(0)}
-          style={{ padding: '5px 12px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 13, fontFamily: 'inherit' }}
-        >Today</button>
-
-        <button
-          aria-label={`Next day, ${formatDayShort(addDays(BASE_DATE, dayOffset + 1))}`}
-          onClick={() => setDayOffset(d => d + 1)}
-          style={{ width: 32, height: 32, border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >›</button>
-
-        <div aria-live="polite" aria-atomic="true" style={{ flex: 1, fontSize: 18, fontWeight: 700, color: '#222', marginLeft: 8 }}>
-          {formatDay(currentDay)}
-        </div>
-
-        <div style={{ position: 'relative' }}>
-          <button
-            aria-label="Go to a specific date"
-            aria-expanded={showDatePicker}
-            aria-haspopup="dialog"
-            onClick={() => { setPickerYear(''); setPickerMonth(''); setPickerDay(''); setPickerAnnouncement(''); setShowDatePicker(v => !v) }}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 13, fontFamily: 'inherit' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <rect x="1" y="3" width="14" height="12" rx="2" stroke="#555" strokeWidth="1.4" fill="none"/>
-              <path d="M1 7h14" stroke="#555" strokeWidth="1.4"/>
-              <path d="M5 1v3M11 1v3" stroke="#555" strokeWidth="1.4" strokeLinecap="round"/>
-            </svg>
-            Go to date
-          </button>
-
-          {showDatePicker && (
-            <div
-              role="dialog"
-              aria-label="Go to a specific date"
-              aria-modal="true"
-              style={{ position: 'absolute', right: 0, top: 'calc(100% + 6px)', zIndex: 300, background: '#fff', border: '1px solid #ddd', borderRadius: 10, boxShadow: '0 4px 20px rgba(0,0,0,0.12)', padding: 20, width: 270 }}
-            >
-              <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 600, color: '#333' }}>Go to date</h3>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <div style={{ flex: 2 }}>
-                  <label htmlFor="picker-year" style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#555', marginBottom: 4 }}>Year</label>
-                  <input id="picker-year" autoFocus type="text" inputMode="numeric" placeholder="2026" value={pickerYear}
-                    onChange={e => setPickerYear(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                    onKeyDown={e => { if (e.key === 'Escape') setShowDatePicker(false); if (e.key === 'Enter') navigateToDate() }}
-                    style={{ width: '100%', padding: '7px 8px', border: '1px solid #ccc', borderRadius: 6, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label htmlFor="picker-month" style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#555', marginBottom: 4 }}>Month</label>
-                  <input id="picker-month" type="text" inputMode="numeric" placeholder="07" value={pickerMonth}
-                    onChange={e => setPickerMonth(e.target.value.replace(/\D/g, '').slice(0, 2))}
-                    onKeyDown={e => { if (e.key === 'Escape') setShowDatePicker(false); if (e.key === 'Enter') navigateToDate() }}
-                    style={{ width: '100%', padding: '7px 8px', border: '1px solid #ccc', borderRadius: 6, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label htmlFor="picker-day" style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#555', marginBottom: 4 }}>Day</label>
-                  <input id="picker-day" type="text" inputMode="numeric" placeholder="13" value={pickerDay}
-                    onChange={e => setPickerDay(e.target.value.replace(/\D/g, '').slice(0, 2))}
-                    onKeyDown={e => { if (e.key === 'Escape') setShowDatePicker(false); if (e.key === 'Enter') navigateToDate() }}
-                    style={{ width: '100%', padding: '7px 8px', border: '1px solid #ccc', borderRadius: 6, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                </div>
-              </div>
-              <button
-                onClick={navigateToDate}
-                disabled={!pickerYear || !pickerMonth || !pickerDay}
-                style={{ width: '100%', padding: '9px', background: TEAL, color: '#fff', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', opacity: (!pickerYear || !pickerMonth || !pickerDay) ? 0.4 : 1 }}
-              >Go</button>
-            </div>
-          )}
-        </div>
-      </nav>
-
       {/* Main content */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', background: '#f0f1f2' }}>
         <main
@@ -754,6 +673,82 @@ function DayView() {
           aria-label={`Schedule for ${practitioner}, ${formatDay(currentDay)}`}
           style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', outline: 'none' }}
         >
+          {/* Date nav — inside schedule column so panel header aligns with it */}
+          <nav aria-label="Date navigation" style={{ background: '#fff', borderBottom: '1px solid #e2e2e2', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <button
+              aria-label={`Previous day, ${formatDayShort(addDays(BASE_DATE, dayOffset - 1))}`}
+              onClick={() => setDayOffset(d => d - 1)}
+              style={{ width: 32, height: 32, border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >‹</button>
+            <button
+              aria-label="Go to today"
+              onClick={() => setDayOffset(0)}
+              style={{ padding: '5px 12px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 13, fontFamily: 'inherit' }}
+            >Today</button>
+            <button
+              aria-label={`Next day, ${formatDayShort(addDays(BASE_DATE, dayOffset + 1))}`}
+              onClick={() => setDayOffset(d => d + 1)}
+              style={{ width: 32, height: 32, border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >›</button>
+            <div aria-live="polite" aria-atomic="true" style={{ flex: 1, fontSize: 18, fontWeight: 700, color: '#222', marginLeft: 8 }}>
+              {formatDay(currentDay)}
+            </div>
+            <div style={{ position: 'relative' }}>
+              <button
+                aria-label="Go to a specific date"
+                aria-expanded={showDatePicker}
+                aria-haspopup="dialog"
+                onClick={() => { setPickerYear(''); setPickerMonth(''); setPickerDay(''); setPickerAnnouncement(''); setShowDatePicker(v => !v) }}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', cursor: 'pointer', fontSize: 13, fontFamily: 'inherit' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <rect x="1" y="3" width="14" height="12" rx="2" stroke="#555" strokeWidth="1.4" fill="none"/>
+                  <path d="M1 7h14" stroke="#555" strokeWidth="1.4"/>
+                  <path d="M5 1v3M11 1v3" stroke="#555" strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+                Go to date
+              </button>
+              {showDatePicker && (
+                <div
+                  role="dialog"
+                  aria-label="Go to a specific date"
+                  aria-modal="true"
+                  style={{ position: 'absolute', right: 0, top: 'calc(100% + 6px)', zIndex: 300, background: '#fff', border: '1px solid #ddd', borderRadius: 10, boxShadow: '0 4px 20px rgba(0,0,0,0.12)', padding: 20, width: 270 }}
+                >
+                  <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 600, color: '#333' }}>Go to date</h3>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                    <div style={{ flex: 2 }}>
+                      <label htmlFor="picker-year" style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#555', marginBottom: 4 }}>Year</label>
+                      <input id="picker-year" autoFocus type="text" inputMode="numeric" placeholder="2026" value={pickerYear}
+                        onChange={e => setPickerYear(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                        onKeyDown={e => { if (e.key === 'Escape') setShowDatePicker(false); if (e.key === 'Enter') navigateToDate() }}
+                        style={{ width: '100%', padding: '7px 8px', border: '1px solid #ccc', borderRadius: 6, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor="picker-month" style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#555', marginBottom: 4 }}>Month</label>
+                      <input id="picker-month" type="text" inputMode="numeric" placeholder="07" value={pickerMonth}
+                        onChange={e => setPickerMonth(e.target.value.replace(/\D/g, '').slice(0, 2))}
+                        onKeyDown={e => { if (e.key === 'Escape') setShowDatePicker(false); if (e.key === 'Enter') navigateToDate() }}
+                        style={{ width: '100%', padding: '7px 8px', border: '1px solid #ccc', borderRadius: 6, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor="picker-day" style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#555', marginBottom: 4 }}>Day</label>
+                      <input id="picker-day" type="text" inputMode="numeric" placeholder="13" value={pickerDay}
+                        onChange={e => setPickerDay(e.target.value.replace(/\D/g, '').slice(0, 2))}
+                        onKeyDown={e => { if (e.key === 'Escape') setShowDatePicker(false); if (e.key === 'Enter') navigateToDate() }}
+                        style={{ width: '100%', padding: '7px 8px', border: '1px solid #ccc', borderRadius: 6, fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    </div>
+                  </div>
+                  <button
+                    onClick={navigateToDate}
+                    disabled={!pickerYear || !pickerMonth || !pickerDay}
+                    style={{ width: '100%', padding: '9px', background: TEAL, color: '#fff', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', opacity: (!pickerYear || !pickerMonth || !pickerDay) ? 0.4 : 1 }}
+                  >Go</button>
+                </div>
+              )}
+            </div>
+          </nav>
+
           <div style={{ flex: 1, overflowY: 'auto', background: '#fff' }}>
             <div style={{ background: '#fff' }}>
 
