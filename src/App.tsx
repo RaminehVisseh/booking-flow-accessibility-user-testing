@@ -791,7 +791,7 @@ function DayView() {
 
                   {/* Visual focus highlight */}
                   {focusedRange && (
-                    <div aria-hidden="true" style={{ position: 'absolute', top: (focusedRange.startHour - HOUR_START) * ROW_HEIGHT, height: (focusedRange.endHour - focusedRange.startHour) * ROW_HEIGHT - 1, left: 0, right: 0, background: '#e0f5f4', outline: `2px solid ${TEAL}`, outlineOffset: -2, borderRadius: 2, pointerEvents: 'none', zIndex: 2 }} />
+                    <div aria-hidden="true" style={{ position: 'absolute', top: (focusedRange.startHour - HOUR_START) * ROW_HEIGHT, height: (focusedRange.endHour - focusedRange.startHour) * ROW_HEIGHT - 1, left: 0, right: 0, background: 'transparent', outline: `2px solid ${TEAL}`, outlineOffset: -2, borderRadius: 2, pointerEvents: 'none', zIndex: 2 }} />
                   )}
 
                   {/* Visual booked blocks */}
