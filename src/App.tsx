@@ -176,9 +176,9 @@ function BookingPanel({
     return bookedRanges.some(r => start < r.end && end > r.start && !(start >= r.start && start < r.end))
   }
 
-  // Auto-focus heading on open so JAWS reads dialog label
+  // Auto-focus heading on open so screen reader reads panel label
   useLayoutEffect(() => {
-    const t = setTimeout(() => headingRef.current?.focus(), 100)
+    const t = setTimeout(() => headingRef.current?.focus(), 300)
     return () => clearTimeout(t)
   }, [])
 
@@ -263,9 +263,8 @@ function BookingPanel({
 
       <div
         ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="booking-panel-title"
+        role="region"
+        aria-label="New Appointment"
         aria-describedby="booking-panel-desc"
         onKeyDown={e => {
           if (overlapError && e.key === 'Tab') {
@@ -287,7 +286,7 @@ function BookingPanel({
             id="booking-panel-title"
             ref={headingRef}
             tabIndex={0}
-            style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1a1a1a', outline: 'none' }}
+            style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1a1a1a', borderRadius: 4 }}
           >
             New Appointment
           </h2>
