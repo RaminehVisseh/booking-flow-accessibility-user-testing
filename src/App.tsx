@@ -5,6 +5,17 @@ import {
   PrimaryButton,
   vars,
 } from '@janeapp/burrito-design-system'
+import { JaneNavBar } from '../../jane-nav/src/components/JaneNavBar'
+
+const NAV_ITEMS = [
+  { label: 'Day' },
+  { label: 'Schedule' },
+  { label: 'Patients' },
+  { label: 'Staff' },
+  { label: 'Billing' },
+  { label: 'Reports' },
+  { label: 'Settings' },
+]
 
 /* ─────────────────────────────────────────────────────────────────
  *  Constants
@@ -890,6 +901,7 @@ function DayView() {
 export default function App() {
   return (
     <BurritoProvider>
+      <JaneNavBar activeNav="Day" navItems={NAV_ITEMS} />
       <DayView />
     </BurritoProvider>
   )
