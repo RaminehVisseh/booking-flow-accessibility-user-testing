@@ -241,7 +241,7 @@ function BookingPanel({
     <div
       style={{
         position: 'fixed', inset: 0,
-        background: 'rgba(0,0,0,0.4)',
+        background: '#e9eaeb',
         zIndex: 500,
         display: 'flex', justifyContent: 'flex-end',
       }}
@@ -294,13 +294,13 @@ function BookingPanel({
           <h2
             id="booking-panel-title"
             ref={headingRef}
-            tabIndex={-1}
+            tabIndex={0}
             style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1a1a1a', outline: 'none' }}
           >
             New Appointment
           </h2>
           <button
-            aria-label="Close new appointment panel"
+            aria-label="Close"
             onClick={onClose}
             style={{
               background: '#f2f2f2', border: 'none',
@@ -500,16 +500,16 @@ function BookingPanel({
         </div>
 
         {/* Footer */}
-        <div style={{ display: 'flex', gap: 8, padding: '12px 16px', borderTop: '1px solid #ebebeb', background: '#fff', flexShrink: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, padding: '12px 16px', borderTop: '1px solid #ebebeb', background: '#fff', flexShrink: 0 }}>
           <button
             onClick={onClose}
-            style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#444' }}
+            style={{ padding: '9px 20px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#444' }}
           >
             Cancel
           </button>
           <button
             onClick={handleBook}
-            style={{ flex: 2, padding: '10px', background: TEAL, color: '#fff', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ padding: '9px 20px', background: TEAL, color: '#fff', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             Book Appointment
           </button>
