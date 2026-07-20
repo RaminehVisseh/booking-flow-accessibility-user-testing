@@ -746,8 +746,8 @@ function DayView() {
           aria-label={`Schedule for ${practitioner}, ${formatDay(currentDay)}`}
           style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', outline: 'none' }}
         >
-          <div style={{ flex: 1, overflowY: 'auto' }}>
-            <div style={{ background: '#fff', border: '1px solid #e2e2e2', borderRadius: 4, margin: 14 }}>
+          <div style={{ flex: 1, overflowY: 'auto', background: '#fff' }}>
+            <div style={{ background: '#fff' }}>
 
               {/* Date header */}
               <div
