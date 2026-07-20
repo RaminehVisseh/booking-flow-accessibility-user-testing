@@ -754,7 +754,13 @@ function DayView() {
               {/* Practitioner header */}
               <div style={{ display: 'grid', gridTemplateColumns: '60px 1fr', borderBottom: '1px solid #e2e2e2' }}>
                 <div />
-                <div style={{ borderLeft: '1px solid #e2e2e2', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px' }}>
+                <div
+                  tabIndex={0}
+                  aria-label={`Viewing schedule for ${practitioner}`}
+                  style={{ borderLeft: '1px solid #e2e2e2', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', outline: 'none' }}
+                  onFocus={e => { e.currentTarget.style.outline = `2px solid ${TEAL}`; e.currentTarget.style.outlineOffset = '-2px' }}
+                  onBlur={e => { e.currentTarget.style.outline = 'none' }}
+                >
                   <div aria-hidden="true" style={{ width: 28, height: 28, borderRadius: '50%', background: TEAL, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>SL</div>
                   <span style={{ fontSize: 13, fontWeight: 600, color: TEAL }}>{practitioner}</span>
                 </div>
