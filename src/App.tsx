@@ -240,12 +240,10 @@ function BookingPanel({
   return (
     <div
       style={{
-        position: 'fixed', inset: 0,
-        background: '#e9eaeb',
+        position: 'fixed', top: 0, right: 0, bottom: 0,
         zIndex: 500,
         display: 'flex', justifyContent: 'flex-end',
       }}
-      onClick={e => { if (e.target === e.currentTarget && !overlapError) onClose() }}
     >
       {/* Always-rendered assertive live region — JAWS needs it in DOM before content fires */}
       <div role="status" aria-live="assertive" aria-atomic="true" style={srOnly}>
