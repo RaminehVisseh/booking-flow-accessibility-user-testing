@@ -274,7 +274,7 @@ function BookingPanel({
           }
         }}
         style={{
-          width: 300, flexShrink: 0,
+          width: 350, flexShrink: 0,
           background: '#fff',
           display: 'flex', flexDirection: 'column',
           borderLeft: '1px solid #e0e0e0',
