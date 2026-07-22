@@ -705,7 +705,6 @@ function BookingPanel({
             <label htmlFor="appt-notes" style={{ display: 'block', fontSize: 15, fontWeight: 600, color: '#444', marginBottom: 8 }}>Notes</label>
             <textarea
               id="appt-notes"
-              aria-label="Note, Write a note"
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Write a note"
