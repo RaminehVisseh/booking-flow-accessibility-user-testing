@@ -230,6 +230,8 @@ function BookingPanel({
   const packagesRef = useRef<HTMLDivElement>(null)
   const patientInfoRef = useRef<HTMLDivElement>(null)
   const removePatientRef = useRef<HTMLButtonElement>(null)
+  const patientFocusRef = useRef<HTMLButtonElement>(null)
+  const [patientFocusLabel, setPatientFocusLabel] = useState('')
 
   // Build time options in 15-min increments from startHour up to (but not including) availableUntil
   const timeOptions: number[] = []
@@ -282,7 +284,9 @@ function BookingPanel({
     setPatient(name)
     setPatientQuery('')
     const info = MOCK_PATIENT_INFO[name] ?? DEFAULT_PATIENT_INFO
-    announce(`${name}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`)
+    const label = `${name}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`
+    setPatientFocusLabel(label)
+    setTimeout(() => patientFocusRef.current?.focus(), 50)
   }
 
   function announce(msg: string) {
@@ -499,6 +503,15 @@ function BookingPanel({
                 )
               })()}
             </div>
+
+            {/* SR-only focus target — outside aria-hidden, receives focus on patient select */}
+            <button
+              ref={patientFocusRef}
+              tabIndex={-1}
+              aria-roledescription={"​"}
+              aria-label={patientFocusLabel}
+              style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 'none', padding: 0, margin: 0, background: 'transparent' }}
+            />
 
             {/* Search UI — always in DOM, hidden when patient selected */}
             <div style={{ display: patient ? 'none' : 'block' }} aria-hidden="true">
