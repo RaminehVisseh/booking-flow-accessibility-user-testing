@@ -1275,7 +1275,7 @@ function DayView() {
                           <div>
                             <div style={{ fontWeight: 700 }}>{formatHour(s)} – {formatHour(s + dur)}</div>
                             <div style={{ fontWeight: 600 }}>{appt.patient}</div>
-                            <div style={{ opacity: 0.85 }}>{appt.treatment}</div>
+                            <div>{appt.treatment}</div>
                           </div>
                         </div>
                       </div>
