@@ -229,6 +229,8 @@ function BookingPanel({
   const packagesRef = useRef<HTMLDivElement>(null)
   const patientInfoRef = useRef<HTMLDivElement>(null)
   const removePatientRef = useRef<HTMLButtonElement>(null)
+  const patientAnnounceRef = useRef<HTMLButtonElement>(null)
+  const [patientAnnounceLabel, setPatientAnnounceLabel] = useState('')
 
   // Build time options in 15-min increments from startHour up to (but not including) availableUntil
   const timeOptions: number[] = []
@@ -281,7 +283,9 @@ function BookingPanel({
     setPatient(name)
     setPatientQuery('')
     const info = MOCK_PATIENT_INFO[name] ?? DEFAULT_PATIENT_INFO
-    announce(`${name} selected. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`)
+    const label = `${name}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`
+    setPatientAnnounceLabel(label)
+    setTimeout(() => patientAnnounceRef.current?.focus(), 50)
   }
 
   function announce(msg: string) {
@@ -340,7 +344,15 @@ function BookingPanel({
 
   return (
     <>
-      {/* Always-rendered assertive live region — JAWS needs it in DOM before content fires */}
+      {/* SR-only focus target for patient selection — receives focus instead of live region */}
+      <button
+        ref={patientAnnounceRef}
+        tabIndex={-1}
+        aria-roledescription=" "
+        aria-label={patientAnnounceLabel}
+        style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 'none', padding: 0, margin: 0 }}
+      />
+      {/* Always-rendered assertive live region — used for non-patient announcements */}
       <div role="status" aria-live="assertive" aria-atomic="true" style={srOnly}>
         {announcement}
       </div>
@@ -703,6 +715,7 @@ function BookingPanel({
             <label htmlFor="appt-notes" style={{ display: 'block', fontSize: 15, fontWeight: 600, color: '#444', marginBottom: 8 }}>Notes</label>
             <textarea
               id="appt-notes"
+              aria-label="Note, Write a note"
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Write a note"
