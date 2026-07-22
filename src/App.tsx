@@ -230,6 +230,7 @@ function BookingPanel({
   const packagesRef = useRef<HTMLDivElement>(null)
   const patientInfoRef = useRef<HTMLDivElement>(null)
   const removePatientRef = useRef<HTMLButtonElement>(null)
+  const focusSinkRef = useRef<HTMLDivElement>(null)
 
   // Build time options in 15-min increments from startHour up to (but not including) availableUntil
   const timeOptions: number[] = []
@@ -279,8 +280,8 @@ function BookingPanel({
   useFocusTrap(panelRef, true)
 
   function selectPatient(name: string) {
-    // Focus heading BEFORE state changes so NVDA doesn't lose focus when <li> items are removed from DOM
-    headingRef.current?.focus()
+    // Focus silent sink BEFORE state changes so NVDA doesn't lose focus when <li> items are removed from DOM
+    focusSinkRef.current?.focus()
     setPatient(name)
     setPatientQuery('')
     const info = MOCK_PATIENT_INFO[name] ?? DEFAULT_PATIENT_INFO
@@ -345,6 +346,9 @@ function BookingPanel({
 
   return (
     <>
+      {/* Silent focus sink — captures focus when suggestion <li> disappears, preventing NVDA from falling to <body> */}
+      <div ref={focusSinkRef} tabIndex={-1} style={srOnly} />
+
       {/* Always-rendered live region */}
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>
         {announcement}
