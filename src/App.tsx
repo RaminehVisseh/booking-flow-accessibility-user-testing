@@ -1073,7 +1073,7 @@ function DayView() {
   gridItems.sort((a, b) => a.startHour - b.startHour)
 
   const apptColors = ['#00C1CA', '#00C1CA', '#00C1CA']
-  const apptColorText = ['#fff', '#fff', '#fff']
+  const apptColorText = ['#000', '#000', '#000']
   const bookedSlots = Object.keys(booked)
   const colorMap = bookedSlots.reduce((acc, slot, i) => { acc[slot] = i % apptColors.length; return acc }, {} as Record<string, number>)
 
