@@ -702,9 +702,10 @@ function BookingPanel({
 
           {/* Notes */}
           <div style={{ padding: '14px 16px' }}>
-            <label htmlFor="appt-notes" style={{ display: 'block', fontSize: 15, fontWeight: 600, color: '#444', marginBottom: 8 }}>Notes</label>
+            <label aria-hidden="true" style={{ display: 'block', fontSize: 15, fontWeight: 600, color: '#444', marginBottom: 8 }}>Notes</label>
             <textarea
-              id="appt-notes"
+              aria-label="Notes. Write a note"
+              aria-roledescription={"​"}
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Write a note"
