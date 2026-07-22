@@ -1254,10 +1254,10 @@ function DayView() {
                   {bookingHour !== null && bookingAvailableUntil !== null && (
                     <div aria-hidden="true" style={{ position: 'absolute', top: (bookingHour - HOUR_START) * ROW_HEIGHT, height: (bookingAvailableUntil - bookingHour) * ROW_HEIGHT - 2, left: 2, right: 2, background: '#b0b8c1', color: '#000', borderRadius: 3, padding: '6px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <span style={{ fontSize: 13 }}>✓</span>
-                        <span style={{ fontWeight: 600 }}>{formatHour(bookingHour)} –</span>
+                        <span style={{ fontSize: 13, color: '#000' }}>✓</span>
+                        <span style={{ fontWeight: 600, color: '#000' }}>{formatHour(bookingHour)} –</span>
                       </div>
-                      <div style={{ marginTop: 3, background: 'rgba(255,255,255,0.25)', borderRadius: 3, padding: '1px 6px', display: 'inline-block', fontSize: 10, fontWeight: 600 }}>Reserved</div>
+                      <div style={{ marginTop: 3, background: 'rgba(0,0,0,0.12)', borderRadius: 3, padding: '1px 6px', display: 'inline-block', fontSize: 10, fontWeight: 600, color: '#000' }}>Reserved</div>
                     </div>
                   )}
 
