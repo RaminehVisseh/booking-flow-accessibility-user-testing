@@ -760,10 +760,10 @@ function SectionHeader({ label, expanded, onToggle }: { label: string; expanded:
 }
 
 function ConfirmedPanel({
-  patient, treatment, startHour, endHour, practitioner, date, onClose,
+  patient, treatment, startHour, endHour, practitioner, date, onClose, onArrive,
 }: {
   patient: string; treatment: string; startHour: number; endHour: number
-  practitioner: string; date: Date; onClose: () => void
+  practitioner: string; date: Date; onClose: () => void; onArrive?: () => void
 }) {
   const TEAL = vars.global.color.brand['70']
   const panelRef = useRef<HTMLDivElement>(null)
@@ -815,7 +815,7 @@ function ConfirmedPanel({
           <button
             aria-label={arrived ? 'Arrived, appointment marked as arrived' : 'Mark as Arrived'}
             aria-pressed={arrived}
-            onClick={() => setArrived(true)}
+            onClick={() => { setArrived(true); onArrive?.() }}
             style={{ padding: '7px 16px', border: arrived ? 'none' : '1px solid #ccc', borderRadius: 6, background: arrived ? '#2e7d32' : '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: arrived ? '#fff' : '#333' }}
           >Arrive</button>
           <button aria-label="Mark as No Show" style={{ padding: '7px 16px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#333' }}>No Show</button>
@@ -1019,6 +1019,7 @@ function DayView() {
   const [bookingHour, setBookingHour] = useState<number | null>(null)
   const [bookingAvailableUntil, setBookingAvailableUntil] = useState<number | null>(null)
   const [bookingGhost, setBookingGhost] = useState<{ startHour: number; duration: number } | null>(null)
+  const [arrivedSlots, setArrivedSlots] = useState<Set<string>>(new Set())
   const [addedBookings, setAddedBookings] = useState<Record<string, { patient: string; treatment: string }>>({})
   const [confirmedAppt, setConfirmedAppt] = useState<{ patient: string; treatment: string; startHour: number; endHour: number } | null>(null)
   const [successAnnouncement, setSuccessAnnouncement] = useState('')
@@ -1271,12 +1272,19 @@ function DayView() {
                   {Object.entries(booked).map(([slot, appt]) => {
                     const s = slotToHour(slot)
                     const dur = durationHours(appt.treatment)
-                    const ci = colorMap[slot] ?? 0
+                    const isArrived = arrivedSlots.has(slot)
+                    const bg = isArrived ? '#2e7d32' : (apptColors[colorMap[slot] ?? 0])
+                    const fg = isArrived ? '#fff' : (apptColorText[colorMap[slot] ?? 0])
                     return (
-                      <div key={slot} aria-hidden="true" style={{ position: 'absolute', top: (s - HOUR_START) * ROW_HEIGHT, height: dur * ROW_HEIGHT - 2, left: 2, right: 2, background: apptColors[ci], color: apptColorText[ci], borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.3, overflow: 'hidden', pointerEvents: 'none', zIndex: 1, textAlign: 'left' }}>
-                        <div style={{ fontWeight: 700 }}>{formatHour(s)} – {formatHour(s + dur)}</div>
-                        <div>{appt.patient}</div>
-                        <div style={{ opacity: 0.8 }}>{appt.treatment}</div>
+                      <div key={slot} aria-hidden="true" style={{ position: 'absolute', top: (s - HOUR_START) * ROW_HEIGHT, height: dur * ROW_HEIGHT - 2, left: 2, right: 2, background: bg, color: fg, borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 1, textAlign: 'left' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                          {isArrived && <span style={{ fontSize: 12, marginTop: 1, flexShrink: 0 }}>✓</span>}
+                          <div>
+                            <div style={{ fontWeight: 700 }}>{formatHour(s)} – {formatHour(s + dur)}</div>
+                            <div style={{ fontWeight: 600 }}>{appt.patient}</div>
+                            <div style={{ opacity: 0.85 }}>{appt.treatment}</div>
+                          </div>
+                        </div>
                       </div>
                     )
                   })}
@@ -1339,6 +1347,10 @@ function DayView() {
             practitioner={practitioner}
             date={currentDay}
             onClose={() => setConfirmedAppt(null)}
+            onArrive={() => {
+              const slot = `${String(Math.floor(confirmedAppt.startHour)).padStart(2,'0')}:${String(Math.round((confirmedAppt.startHour % 1)*60)).padStart(2,'0')}`
+              setArrivedSlots(prev => new Set([...prev, slot]))
+            }}
           />
         )}
 
