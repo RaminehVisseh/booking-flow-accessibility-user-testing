@@ -1072,8 +1072,8 @@ function DayView() {
   if (cursor < HOUR_END) gridItems.push({ kind: 'available', startHour: cursor, endHour: HOUR_END })
   gridItems.sort((a, b) => a.startHour - b.startHour)
 
-  const apptColors = ['#a9dadc', '#a9dadc', '#a9dadc']
-  const apptColorText = ['#0d3a3c', '#0d3a3c', '#0d3a3c']
+  const apptColors = ['#00C1CA', '#00C1CA', '#00C1CA']
+  const apptColorText = ['#fff', '#fff', '#fff']
   const bookedSlots = Object.keys(booked)
   const colorMap = bookedSlots.reduce((acc, slot, i) => { acc[slot] = i % apptColors.length; return acc }, {} as Record<string, number>)
 
