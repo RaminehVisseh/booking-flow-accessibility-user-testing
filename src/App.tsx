@@ -468,16 +468,6 @@ function BookingPanel({
             </div>
             {/* Patient selected row — always in DOM, hidden when no patient */}
             <div aria-hidden="true" style={{ display: patient ? 'block' : 'none' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: '#f0faf9', border: `1px solid ${TEAL}`, borderRadius: 6, fontSize: 14, marginBottom: 12 }}>
-                <span style={{ fontWeight: 600, color: '#222' }}>{patient}</span>
-                <button
-                  ref={removePatientRef}
-                  type="button"
-                  aria-label={`Remove ${patient}`}
-                  onClick={() => { setPatient(''); setPatientQuery(''); setInsuranceChoice('') }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: 16, padding: 0 }}
-                >✕</button>
-              </div>
               {(() => {
                 const info = MOCK_PATIENT_INFO[patient] ?? DEFAULT_PATIENT_INFO
                 return (
@@ -486,9 +476,13 @@ function BookingPanel({
                     tabIndex={patient ? 0 : -1}
                     aria-roledescription={"\u200B"}
                     aria-label={`${patient}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.${info.noShows > 0 ? ` ${info.noShows} no show${info.noShows > 1 ? 's' : ''}.` : ''}`}
-                    style={{ display: 'block', width: '100%', border: '1px solid #e0e0e0', borderRadius: 8, padding: '12px 14px', fontSize: 13, lineHeight: 1.6, color: '#333', background: '#fafafa', cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}
+                    style={{ display: 'block', width: '100%', border: 'none', padding: 0, fontSize: 13, lineHeight: 1.6, color: '#333', background: 'transparent', cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}
                   >
-                    <p style={{ margin: '0 0 4px', fontWeight: 700, fontSize: 15, color: '#1a1a1a' }} aria-hidden="true">{patient}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#1a1a1a' }} aria-hidden="true">{patient}</p>
+                      <button type="button" ref={removePatientRef} aria-label={`Remove ${patient}`} onClick={e => { e.stopPropagation(); setPatient(''); setPatientQuery(''); setInsuranceChoice('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: 16, padding: 0, lineHeight: 1 }}>✕</button>
+                    </div>
+                    <p style={{ margin: '0 0 4px', display: 'none' }} aria-hidden="true">{patient}</p>
                     <p style={{ margin: '0 0 2px' }} aria-hidden="true"><span aria-hidden="true">✉ </span><span style={{ color: TEAL }}>{info.email}</span></p>
                     <p style={{ margin: '0 0 2px' }} aria-hidden="true"><span aria-hidden="true">⌂ </span>{info.phone} &nbsp; <span aria-hidden="true">☏ </span>{info.mobile}</p>
                     <p style={{ margin: '0 0 2px' }} aria-hidden="true"><span aria-hidden="true">🎁 </span>{info.dob}</p>
@@ -816,7 +810,7 @@ function ConfirmedPanel({
             aria-label={arrived ? 'Arrived, appointment marked as arrived' : 'Mark as Arrived'}
             aria-pressed={arrived}
             onClick={() => { setArrived(true); onArrive?.() }}
-            style={{ padding: '7px 16px', border: arrived ? 'none' : '1px solid #ccc', borderRadius: 6, background: arrived ? '#2e7d32' : '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: arrived ? '#fff' : '#333' }}
+            style={{ padding: '7px 16px', border: arrived ? 'none' : '1px solid #ccc', borderRadius: 6, background: arrived ? '#8CC27F' : '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: arrived ? '#fff' : '#333' }}
           >Arrive</button>
           <button aria-label="Mark as No Show" style={{ padding: '7px 16px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#333' }}>No Show</button>
           <button disabled tabIndex={-1} aria-disabled="true" aria-label="Pay, currently unavailable" style={{ marginLeft: 'auto', padding: '7px 16px', border: '1px solid #ddd', borderRadius: 6, background: '#f5f5f5', fontSize: 13, fontWeight: 500, cursor: 'not-allowed', fontFamily: 'inherit', color: '#aaa' }}>Pay ▾</button>
@@ -1079,8 +1073,8 @@ function DayView() {
   if (cursor < HOUR_END) gridItems.push({ kind: 'available', startHour: cursor, endHour: HOUR_END })
   gridItems.sort((a, b) => a.startHour - b.startHour)
 
-  const apptColors = ['#a9dadc', '#bfafd4', '#84c5a8']
-  const apptColorText = ['#0d3a3c', '#3d2b5a', '#0c3a26']
+  const apptColors = ['#a9dadc', '#a9dadc', '#a9dadc']
+  const apptColorText = ['#0d3a3c', '#0d3a3c', '#0d3a3c']
   const bookedSlots = Object.keys(booked)
   const colorMap = bookedSlots.reduce((acc, slot, i) => { acc[slot] = i % apptColors.length; return acc }, {} as Record<string, number>)
 
@@ -1259,7 +1253,7 @@ function DayView() {
 
                   {/* Ghost block — shows while booking panel is open with treatment selected */}
                   {bookingGhost && (
-                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingGhost.startHour - HOUR_START) * ROW_HEIGHT, height: bookingGhost.duration * ROW_HEIGHT - 2, left: 2, right: 2, background: '#a9dadc', color: '#0d3a3c', borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2, opacity: 0.85 }}>
+                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingGhost.startHour - HOUR_START) * ROW_HEIGHT, height: bookingGhost.duration * ROW_HEIGHT - 2, left: 2, right: 2, background: '#a9dadc', color: '#0d3a3c', borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
                       <div style={{ fontWeight: 700 }}>{formatHour(bookingGhost.startHour)} – {formatHour(bookingGhost.startHour + bookingGhost.duration)}</div>
                       {bookingGhost.patient && <div style={{ fontWeight: 600 }}>{bookingGhost.patient}</div>}
                       <div style={{ opacity: 0.85 }}>{bookingGhost.treatment}</div>
@@ -1271,7 +1265,7 @@ function DayView() {
                     const s = slotToHour(slot)
                     const dur = durationHours(appt.treatment)
                     const isArrived = arrivedSlots.has(slot)
-                    const bg = isArrived ? '#2e7d32' : (apptColors[colorMap[slot] ?? 0])
+                    const bg = isArrived ? '#8CC27F' : (apptColors[colorMap[slot] ?? 0])
                     const fg = isArrived ? '#fff' : (apptColorText[colorMap[slot] ?? 0])
                     return (
                       <div key={slot} aria-hidden="true" style={{ position: 'absolute', top: (s - HOUR_START) * ROW_HEIGHT, height: dur * ROW_HEIGHT - 2, left: 2, right: 2, background: bg, color: fg, borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 1, textAlign: 'left' }}>
