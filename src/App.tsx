@@ -503,8 +503,8 @@ function BookingPanel({
               })()}
             </div>
 
-{/* Search UI — always in DOM, hidden when patient selected */}
-            <div style={{ display: patient ? 'none' : 'block' }} aria-hidden="true">
+{/* Search UI — always visible */}
+            <div aria-hidden="true">
                 <label htmlFor="patient-search" style={{ display: 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
                 <div style={{ position: 'relative' }}>
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', pointerEvents: 'none' }}>
