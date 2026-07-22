@@ -279,6 +279,8 @@ function BookingPanel({
   useFocusTrap(panelRef, true)
 
   function selectPatient(name: string) {
+    // Focus heading BEFORE state changes so NVDA doesn't lose focus when <li> items are removed from DOM
+    headingRef.current?.focus()
     setPatient(name)
     setPatientQuery('')
     const info = MOCK_PATIENT_INFO[name] ?? DEFAULT_PATIENT_INFO
