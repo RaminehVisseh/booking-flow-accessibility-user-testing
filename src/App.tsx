@@ -195,7 +195,7 @@ function OverlapToast({ onDismiss }: { onDismiss: () => void }) {
  * ───────────────────────────────────────────────────────────────── */
 
 interface BookingPanelProps {
-  onGhostChange?: (startHour: number, duration: number, patient: string, treatment: string) => void
+
   practitioner: string
   startHour: number
   availableUntil: number
@@ -210,7 +210,7 @@ interface BookingPanelProps {
 
 function BookingPanel({
   practitioner, startHour, availableUntil, date, bookedRanges,
-  onClose, onBook, onOverlapClose, onOverlap, triggerRef, onGhostChange,
+  onClose, onBook, onOverlapClose, onOverlap, triggerRef,
 }: BookingPanelProps) {
   const TEAL = vars.global.color.brand['70']
   const [treatment, setTreatment] = useState('')
@@ -295,7 +295,7 @@ function BookingPanel({
     setOverlapError(false)
     const tr = TREATMENTS.find(t => t.id === id)
     if (!tr) return
-    onGhostChange?.(selectedTime, tr.duration, patient, tr.label)
+
     if (hasOverlap(selectedTime, tr.duration)) {
       announce(`Warning: ${tr.label} will overlap ${practitioner}'s next appointment.`)
     } else {
@@ -661,7 +661,7 @@ function BookingPanel({
               aria-label="Start time"
               aria-roledescription="dropdown"
               value={String(selectedTime)}
-              onChange={e => { const t = Number(e.target.value); setSelectedTime(t); const tr = TREATMENTS.find(x => x.id === treatment); if (tr) onGhostChange?.(t, tr.duration, patient, tr.label) }}
+              onChange={e => { setSelectedTime(Number(e.target.value)) }}
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, background: '#fff', fontFamily: 'inherit', cursor: 'pointer', marginBottom: 8, appearance: 'auto' }}
             >
               {timeOptions.map(t => (
@@ -1012,7 +1012,6 @@ function DayView() {
   const [dayOffset, setDayOffset] = useState(0)
   const [bookingHour, setBookingHour] = useState<number | null>(null)
   const [bookingAvailableUntil, setBookingAvailableUntil] = useState<number | null>(null)
-  const [bookingGhost, setBookingGhost] = useState<{ startHour: number; duration: number; patient: string; treatment: string } | null>(null)
   const [arrivedSlots, setArrivedSlots] = useState<Set<string>>(new Set())
   const [addedBookings, setAddedBookings] = useState<Record<string, { patient: string; treatment: string }>>({})
   const [confirmedAppt, setConfirmedAppt] = useState<{ patient: string; treatment: string; startHour: number; endHour: number } | null>(null)
@@ -1251,12 +1250,14 @@ function DayView() {
                     <div aria-hidden="true" style={{ position: 'absolute', top: (focusedRange.startHour - HOUR_START) * ROW_HEIGHT, height: (focusedRange.endHour - focusedRange.startHour) * ROW_HEIGHT - 1, left: 0, right: 0, background: 'transparent', outline: `2px solid ${TEAL}`, outlineOffset: -2, borderRadius: 2, pointerEvents: 'none', zIndex: 2 }} />
                   )}
 
-                  {/* Ghost block — shows while booking panel is open with treatment selected */}
-                  {bookingGhost && (
-                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingGhost.startHour - HOUR_START) * ROW_HEIGHT, height: bookingGhost.duration * ROW_HEIGHT - 2, left: 2, right: 2, background: '#a9dadc', color: '#0d3a3c', borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
-                      <div style={{ fontWeight: 700 }}>{formatHour(bookingGhost.startHour)} – {formatHour(bookingGhost.startHour + bookingGhost.duration)}</div>
-                      {bookingGhost.patient && <div style={{ fontWeight: 600 }}>{bookingGhost.patient}</div>}
-                      <div style={{ opacity: 0.85 }}>{bookingGhost.treatment}</div>
+                  {/* Reserved block — grey, shown while booking panel is open */}
+                  {bookingHour !== null && bookingAvailableUntil !== null && (
+                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingHour - HOUR_START) * ROW_HEIGHT, height: (bookingAvailableUntil - bookingHour) * ROW_HEIGHT - 2, left: 2, right: 2, background: '#b0b8c1', color: '#fff', borderRadius: 3, padding: '6px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <span style={{ fontSize: 13 }}>✓</span>
+                        <span style={{ fontWeight: 600 }}>{formatHour(bookingHour)} –</span>
+                      </div>
+                      <div style={{ marginTop: 3, background: 'rgba(255,255,255,0.25)', borderRadius: 3, padding: '1px 6px', display: 'inline-block', fontSize: 10, fontWeight: 600 }}>Reserved</div>
                     </div>
                   )}
 
@@ -1354,16 +1355,14 @@ function DayView() {
               availableUntil={bookingAvailableUntil ?? HOUR_END}
               date={currentDay}
               bookedRanges={bookedRanges}
-              onClose={() => { setBookingHour(null); setBookingGhost(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
+              onClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
               onBook={handleBook}
-              onOverlapClose={() => { setBookingHour(null); setBookingGhost(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
+              onOverlapClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
               onOverlap={() => {
                 setBookingHour(null)
-                setBookingGhost(null)
                 setOverlapAnnouncement('Appointment is not booked as overlapping appointments are disabled.')
                 setTimeout(() => dateHeaderRef.current?.focus(), 100)
               }}
-              onGhostChange={(startHour, duration, patient, treatment) => setBookingGhost({ startHour, duration, patient, treatment })}
               triggerRef={activeSlotRef}
             />
           </div>
