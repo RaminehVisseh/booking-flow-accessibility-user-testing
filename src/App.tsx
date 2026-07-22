@@ -470,7 +470,7 @@ function BookingPanel({
               </button>
             </div>
             {/* Patient selected row — always in DOM, hidden when no patient */}
-            <div aria-hidden="true" style={{ display: patient ? 'block' : 'none' }}>
+            <div style={{ display: patient ? 'block' : 'none' }}>
               {(() => {
                 const info = MOCK_PATIENT_INFO[patient] ?? DEFAULT_PATIENT_INFO
                 return (
