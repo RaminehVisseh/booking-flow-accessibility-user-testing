@@ -1267,7 +1267,7 @@ function DayView() {
                     const dur = durationHours(appt.treatment)
                     const isArrived = arrivedSlots.has(slot)
                     const bg = isArrived ? '#8CC27F' : (apptColors[colorMap[slot] ?? 0])
-                    const fg = isArrived ? '#fff' : (apptColorText[colorMap[slot] ?? 0])
+                    const fg = '#000'
                     return (
                       <div key={slot} aria-hidden="true" style={{ position: 'absolute', top: (s - HOUR_START) * ROW_HEIGHT, height: dur * ROW_HEIGHT - 2, left: 2, right: 2, background: bg, color: fg, borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 1, textAlign: 'left' }}>
                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
