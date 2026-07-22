@@ -240,7 +240,7 @@ function BookingPanel({
   const selectedTreatment = TREATMENTS.find(t => t.id === treatment)
   const endHour = selectedTreatment ? selectedTime + selectedTreatment.duration : null
 
-  const patientMatches = patientQuery.length >= 2
+  const patientMatches = !patient && patientQuery.length >= 2
     ? MOCK_PATIENTS.filter(n => n.toLowerCase().includes(patientQuery.toLowerCase()))
     : []
 
@@ -283,7 +283,7 @@ function BookingPanel({
     // Move focus to patient info card after selection
     setTimeout(() => (patientInfoRef.current as unknown as HTMLElement)?.focus(), 50)
     setPatient(name)
-    setPatientQuery('')
+    setPatientQuery(name)
     const info = MOCK_PATIENT_INFO[name] ?? DEFAULT_PATIENT_INFO
     const label = `${name}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`
     announce(label)
@@ -509,7 +509,7 @@ function BookingPanel({
 
 {/* Search UI — always visible */}
             <div aria-hidden="true">
-                <label htmlFor="patient-search" style={{ display: 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
+                <label htmlFor="patient-search" style={{ display: patient ? 'none' : 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
                 <div style={{ position: 'relative' }}>
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', pointerEvents: 'none' }}>
                     <circle cx="6" cy="6" r="4.5" stroke="#aaa" strokeWidth="1.5"/>
@@ -527,7 +527,7 @@ function BookingPanel({
                     aria-expanded={patientMatches.length > 0}
                     placeholder="Add Client..."
                     value={patientQuery}
-                    onChange={e => { setPatientQuery(e.target.value); setFieldErrors(prev => ({ ...prev, patient: undefined })) }}
+                    onChange={e => { setPatientQuery(e.target.value); setPatient(''); setInsuranceChoice(''); setFieldErrors(prev => ({ ...prev, patient: undefined })) }}
                     onKeyDown={e => {
                       if (e.key === 'ArrowDown' && patientMatches.length) {
                         e.preventDefault()
@@ -1258,7 +1258,7 @@ function DayView() {
 
                   {/* Reserved block — grey, shown while booking panel is open */}
                   {bookingHour !== null && bookingAvailableUntil !== null && (
-                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingHour - HOUR_START) * ROW_HEIGHT, height: (bookingAvailableUntil - bookingHour) * ROW_HEIGHT - 2, left: 2, right: 2, background: '#F5F7F7', color: '#000', borderRadius: 3, padding: '6px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
+                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingHour - HOUR_START) * ROW_HEIGHT, height: (bookingAvailableUntil - bookingHour) * ROW_HEIGHT - 2, left: 2, right: 2, background: '#B8BFC0', color: '#000', borderRadius: 3, padding: '6px 8px', fontSize: 11, lineHeight: 1.4, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                         <span style={{ fontSize: 13, color: '#000' }}>✓</span>
                         <span style={{ fontWeight: 600, color: '#000' }}>{formatHour(bookingHour)} –</span>
