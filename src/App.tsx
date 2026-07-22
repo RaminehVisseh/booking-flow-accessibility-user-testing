@@ -195,6 +195,7 @@ function OverlapToast({ onDismiss }: { onDismiss: () => void }) {
  * ───────────────────────────────────────────────────────────────── */
 
 interface BookingPanelProps {
+  onGhostChange?: (startHour: number, duration: number) => void
   practitioner: string
   startHour: number
   availableUntil: number
@@ -209,7 +210,7 @@ interface BookingPanelProps {
 
 function BookingPanel({
   practitioner, startHour, availableUntil, date, bookedRanges,
-  onClose, onBook, onOverlapClose, onOverlap, triggerRef,
+  onClose, onBook, onOverlapClose, onOverlap, triggerRef, onGhostChange,
 }: BookingPanelProps) {
   const TEAL = vars.global.color.brand['70']
   const [treatment, setTreatment] = useState('')
@@ -229,8 +230,6 @@ function BookingPanel({
   const packagesRef = useRef<HTMLDivElement>(null)
   const patientInfoRef = useRef<HTMLDivElement>(null)
   const removePatientRef = useRef<HTMLButtonElement>(null)
-  const patientAnnounceRef = useRef<HTMLButtonElement>(null)
-  const [patientAnnounceLabel, setPatientAnnounceLabel] = useState('')
 
   // Build time options in 15-min increments from startHour up to (but not including) availableUntil
   const timeOptions: number[] = []
@@ -283,9 +282,7 @@ function BookingPanel({
     setPatient(name)
     setPatientQuery('')
     const info = MOCK_PATIENT_INFO[name] ?? DEFAULT_PATIENT_INFO
-    const label = `${name}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`
-    setPatientAnnounceLabel(label)
-    setTimeout(() => patientAnnounceRef.current?.focus(), 50)
+    announce(`${name}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.`)
   }
 
   function announce(msg: string) {
@@ -298,6 +295,7 @@ function BookingPanel({
     setOverlapError(false)
     const tr = TREATMENTS.find(t => t.id === id)
     if (!tr) return
+    onGhostChange?.(selectedTime, tr.duration)
     if (hasOverlap(selectedTime, tr.duration)) {
       announce(`Warning: ${tr.label} will overlap ${practitioner}'s next appointment.`)
     } else {
@@ -344,16 +342,8 @@ function BookingPanel({
 
   return (
     <>
-      {/* SR-only focus target for patient selection — receives focus instead of live region */}
-      <button
-        ref={patientAnnounceRef}
-        tabIndex={-1}
-        aria-roledescription=" "
-        aria-label={patientAnnounceLabel}
-        style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 'none', padding: 0, margin: 0 }}
-      />
-      {/* Always-rendered assertive live region — used for non-patient announcements */}
-      <div role="status" aria-live="assertive" aria-atomic="true" style={srOnly}>
+      {/* Always-rendered live region */}
+      <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>
         {announcement}
       </div>
 
@@ -380,7 +370,7 @@ function BookingPanel({
           <button
             id="booking-panel-title"
             ref={headingRef as unknown as React.RefObject<HTMLButtonElement>}
-            aria-roledescription=" "
+            aria-roledescription={"\u200B"}
             aria-label="New Appointment"
             style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1a1a1a', borderRadius: 4, background: 'none', border: 'none', padding: 0, cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}
           >
@@ -403,7 +393,7 @@ function BookingPanel({
           <div
             tabIndex={0}
             role="group"
-            aria-roledescription=" "
+            aria-roledescription={"\u200B"}
             aria-label="Booking Info"
             style={{ margin: 0, fontSize: 20, color: '#555', fontWeight: 600, borderRadius: 4 }}
           >
@@ -494,7 +484,7 @@ function BookingPanel({
                   <button
                     ref={patientInfoRef as unknown as React.RefObject<HTMLButtonElement>}
                     tabIndex={patient ? 0 : -1}
-                    aria-roledescription=" "
+                    aria-roledescription={"\u200B"}
                     aria-label={`${patient}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.${info.noShows > 0 ? ` ${info.noShows} no show${info.noShows > 1 ? 's' : ''}.` : ''}`}
                     style={{ display: 'block', width: '100%', border: '1px solid #e0e0e0', borderRadius: 8, padding: '12px 14px', fontSize: 13, lineHeight: 1.6, color: '#333', background: '#fafafa', cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}
                   >
@@ -599,7 +589,7 @@ function BookingPanel({
             ref={packagesRef}
             tabIndex={0}
             role="button"
-            aria-roledescription=" "
+            aria-roledescription={"\u200B"}
             aria-label="Packages and Memberships: No Packages/Memberships"
             style={{ padding: '14px 16px', borderRadius: 4 }}
           >
@@ -677,7 +667,7 @@ function BookingPanel({
               aria-label="Start time"
               aria-roledescription="dropdown"
               value={String(selectedTime)}
-              onChange={e => setSelectedTime(Number(e.target.value))}
+              onChange={e => { const t = Number(e.target.value); setSelectedTime(t); const tr = TREATMENTS.find(x => x.id === treatment); if (tr) onGhostChange?.(t, tr.duration) }}
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, background: '#fff', fontFamily: 'inherit', cursor: 'pointer', marginBottom: 8, appearance: 'auto' }}
             >
               {timeOptions.map(t => (
@@ -732,7 +722,7 @@ function BookingPanel({
           <button
             onClick={handleBook}
             aria-label="Book Appointment, press Enter to book"
-            aria-roledescription=" "
+            aria-roledescription={"\u200B"}
             style={{ order: 2, padding: '9px 20px', background: TEAL, color: '#fff', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             Book Appointment
@@ -815,7 +805,7 @@ function ConfirmedPanel({
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #e8e8e8' }}>
-          <button ref={headingRef as unknown as React.RefObject<HTMLButtonElement>} aria-roledescription=" " aria-label="Appointment" style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1a1a1a', borderRadius: 4, background: 'none', border: 'none', padding: 0, cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}><span aria-hidden="true">Appointment</span></button>
+          <button ref={headingRef as unknown as React.RefObject<HTMLButtonElement>} aria-roledescription={"\u200B"} aria-label="Appointment" style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1a1a1a', borderRadius: 4, background: 'none', border: 'none', padding: 0, cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}><span aria-hidden="true">Appointment</span></button>
           <button aria-label="Close appointment" onClick={onClose}
             style={{ background: '#f2f2f2', border: 'none', borderRadius: 6, width: 32, height: 32, cursor: 'pointer', fontSize: 15, color: '#555', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
@@ -1028,6 +1018,7 @@ function DayView() {
   const [dayOffset, setDayOffset] = useState(0)
   const [bookingHour, setBookingHour] = useState<number | null>(null)
   const [bookingAvailableUntil, setBookingAvailableUntil] = useState<number | null>(null)
+  const [bookingGhost, setBookingGhost] = useState<{ startHour: number; duration: number } | null>(null)
   const [addedBookings, setAddedBookings] = useState<Record<string, { patient: string; treatment: string }>>({})
   const [confirmedAppt, setConfirmedAppt] = useState<{ patient: string; treatment: string; startHour: number; endHour: number } | null>(null)
   const [successAnnouncement, setSuccessAnnouncement] = useState('')
@@ -1265,6 +1256,17 @@ function DayView() {
                     <div aria-hidden="true" style={{ position: 'absolute', top: (focusedRange.startHour - HOUR_START) * ROW_HEIGHT, height: (focusedRange.endHour - focusedRange.startHour) * ROW_HEIGHT - 1, left: 0, right: 0, background: 'transparent', outline: `2px solid ${TEAL}`, outlineOffset: -2, borderRadius: 2, pointerEvents: 'none', zIndex: 2 }} />
                   )}
 
+                  {/* Ghost block — shows while booking panel is open with treatment selected */}
+                  {bookingGhost && (
+                    <div aria-hidden="true" style={{ position: 'absolute', top: (bookingGhost.startHour - HOUR_START) * ROW_HEIGHT, height: bookingGhost.duration * ROW_HEIGHT - 2, left: 2, right: 2, background: '#b0b8c1', color: '#fff', borderRadius: 3, padding: '5px 8px', fontSize: 11, lineHeight: 1.3, overflow: 'hidden', pointerEvents: 'none', zIndex: 2, display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                      <span style={{ fontSize: 13, marginTop: 1 }}>✓</span>
+                      <div>
+                        <div style={{ fontWeight: 700 }}>{formatHour(bookingGhost.startHour)} –</div>
+                        <div style={{ marginTop: 2, background: 'rgba(255,255,255,0.25)', borderRadius: 3, padding: '1px 5px', display: 'inline-block', fontSize: 10 }}>Reserved</div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Visual booked blocks */}
                   {Object.entries(booked).map(([slot, appt]) => {
                     const s = slotToHour(slot)
@@ -1287,7 +1289,7 @@ function DayView() {
                           key={`booked-${item.startHour}`}
                           tabIndex={0}
                           role="group"
-                          aria-roledescription=" "
+                          aria-roledescription={"\u200B"}
                           aria-label={`Appointment: ${formatHour(item.startHour)} to ${formatHour(item.endHour)}, ${item.patient}, ${item.treatment}`}
                           style={{ position: 'absolute', top: (item.startHour - HOUR_START) * ROW_HEIGHT, height: (item.endHour - item.startHour) * ROW_HEIGHT, left: 0, right: 0, opacity: 0, zIndex: 3 }}
                           onFocus={() => setFocusedRange({ startHour: item.startHour, endHour: item.endHour })}
@@ -1310,7 +1312,7 @@ function DayView() {
                         <button
                           key={`avail-${item.startHour}-${si}`}
                           aria-label={label}
-                          aria-roledescription=" "
+                          aria-roledescription={"\u200B"}
                           style={{ position: 'absolute', top: (seg.startHour - HOUR_START) * ROW_HEIGHT, height: (seg.endHour - seg.startHour) * ROW_HEIGHT - 1, left: 2, right: 2, background: 'transparent', border: 'none', zIndex: 3, cursor: 'pointer', padding: 0, borderRadius: 2 }}
                           onClick={() => {
                             activeSlotRef.current = document.activeElement as HTMLButtonElement
@@ -1348,14 +1350,16 @@ function DayView() {
               availableUntil={bookingAvailableUntil ?? HOUR_END}
               date={currentDay}
               bookedRanges={bookedRanges}
-              onClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
+              onClose={() => { setBookingHour(null); setBookingGhost(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
               onBook={handleBook}
-              onOverlapClose={() => { setBookingHour(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
+              onOverlapClose={() => { setBookingHour(null); setBookingGhost(null); setTimeout(() => dateHeaderRef.current?.focus(), 100) }}
               onOverlap={() => {
                 setBookingHour(null)
+                setBookingGhost(null)
                 setOverlapAnnouncement('Appointment is not booked as overlapping appointments are disabled.')
                 setTimeout(() => dateHeaderRef.current?.focus(), 100)
               }}
+              onGhostChange={(startHour, duration) => setBookingGhost({ startHour, duration })}
               triggerRef={activeSlotRef}
             />
           </div>
