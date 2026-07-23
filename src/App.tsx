@@ -473,6 +473,86 @@ function BookingPanel({
                 New Client
               </button>
             </div>
+{/* Search UI — always visible */}
+            <div aria-hidden="true">
+                <label htmlFor="patient-search" style={{ display: 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
+                <div style={{ position: 'relative' }}>
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', pointerEvents: 'none' }}>
+                    <circle cx="6" cy="6" r="4.5" stroke="#aaa" strokeWidth="1.5"/>
+                    <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="#aaa" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  <input
+                    id="patient-search"
+                    ref={patientSearchRef}
+                    type="search"
+                    autoComplete="off"
+                    aria-autocomplete="list"
+                    aria-invalid={!!fieldErrors.patient}
+                    aria-describedby={fieldErrors.patient ? 'error-patient' : undefined}
+                    aria-controls={patientMatches.length > 0 ? 'patient-suggestions' : undefined}
+                    aria-expanded={patientMatches.length > 0}
+                    placeholder="Add Client..."
+                    value={patientQuery}
+                    onChange={e => { setPatientQuery(e.target.value); setPatient(''); setInsuranceChoice(''); setFieldErrors(prev => ({ ...prev, patient: undefined })) }}
+                    onKeyDown={e => {
+                      if (e.key === 'ArrowDown' && patientMatches.length) {
+                        e.preventDefault()
+                        document.querySelector<HTMLElement>('#patient-suggestions [role="option"]')?.focus()
+                      }
+                      if (e.key === 'Enter' && patientMatches.length === 1) {
+                        e.preventDefault()
+                        selectPatient(patientMatches[0])
+                      }
+                    }}
+                    style={{ width: '100%', padding: '9px 32px 9px 32px', boxSizing: 'border-box', border: fieldErrors.patient ? '2px solid #c00' : '1px solid #ddd', borderRadius: 8, fontSize: 14, fontFamily: 'inherit' }}
+                  />
+                  {patientQuery && (
+                    <button type="button" onClick={() => { setPatientQuery(''); setPatient(''); setInsuranceChoice('') }} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: 16, padding: 0, lineHeight: 1 }} aria-label="Clear client">✕</button>
+                  )}
+                </div>
+                <ul
+                    id="patient-suggestions"
+                    role="listbox"
+                    aria-label="Client suggestions"
+                    aria-hidden="true"
+                    style={{ display: patientMatches.length > 0 ? 'block' : 'none', position: 'absolute', left: 16, right: 16, zIndex: 200, background: '#fff', border: '1px solid #ccc', borderRadius: 6, marginTop: 2, padding: 0, listStyle: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', maxHeight: 200, overflowY: 'auto' }}
+                  >
+                    {patientMatches.map((name, idx) => (
+                      <li
+                        key={name}
+                        role="option"
+                        tabIndex={0}
+                        aria-selected={false}
+                        onClick={() => { selectPatient(name) }}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(name) }
+                          else if (e.key === 'ArrowDown') { e.preventDefault(); document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx + 1]?.focus() }
+                          else if (e.key === 'ArrowUp') { e.preventDefault(); idx === 0 ? document.getElementById('patient-search')?.focus() : document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx - 1]?.focus() }
+                          else if (e.key === 'Escape') setPatientQuery('')
+                        }}
+                        style={{ padding: '9px 14px', cursor: 'pointer', fontSize: 14, color: '#222' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#f0faf9')}
+                        onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
+                        onFocus={e => { e.currentTarget.style.background = '#f0faf9'; e.currentTarget.style.outline = `2px solid ${TEAL}`; e.currentTarget.style.outlineOffset = '-2px' }}
+                        onBlur={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.outline = 'none' }}
+                      >
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                {patientQuery.length >= 2 && patientMatches.length === 0 && !patient && (
+                  <p role="status" style={{ fontSize: 13, color: '#888', fontStyle: 'italic', margin: '6px 0 0' }}>No clients found for "{patientQuery}"</p>
+                )}
+                {!patient && patientQuery.length === 0 && (
+                  <p style={{ fontSize: 13, color: '#aaa', fontStyle: 'italic', margin: '8px 0 0' }}>No client selected...</p>
+                )}
+                {fieldErrors.patient && (
+                  <p id="error-patient" role="alert" style={{ margin: '6px 0 0', fontSize: 13, color: '#c00', display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <span aria-hidden="true">⚠</span>{fieldErrors.patient}
+                  </p>
+                )}
+            </div>{/* end search UI wrapper */}
+
             {/* Patient selected row — always block, height:0 when empty so NVDA sees no structural change */}
             <div style={{ height: patient ? 'auto' : 0, overflow: 'hidden' }}>
               {(() => {
@@ -506,83 +586,6 @@ function BookingPanel({
                 )
               })()}
             </div>
-
-{/* Search UI — always visible */}
-            <div aria-hidden="true">
-                <label htmlFor="patient-search" style={{ display: patient ? 'none' : 'block', fontSize: 13, color: '#666', marginBottom: 6 }}>Add Client</label>
-                <div style={{ position: 'relative' }}>
-                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#aaa', pointerEvents: 'none' }}>
-                    <circle cx="6" cy="6" r="4.5" stroke="#aaa" strokeWidth="1.5"/>
-                    <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="#aaa" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  <input
-                    id="patient-search"
-                    ref={patientSearchRef}
-                    type="search"
-                    autoComplete="off"
-                    aria-autocomplete="list"
-                    aria-invalid={!!fieldErrors.patient}
-                    aria-describedby={fieldErrors.patient ? 'error-patient' : undefined}
-                    aria-controls={patientMatches.length > 0 ? 'patient-suggestions' : undefined}
-                    aria-expanded={patientMatches.length > 0}
-                    placeholder="Add Client..."
-                    value={patientQuery}
-                    onChange={e => { setPatientQuery(e.target.value); setPatient(''); setInsuranceChoice(''); setFieldErrors(prev => ({ ...prev, patient: undefined })) }}
-                    onKeyDown={e => {
-                      if (e.key === 'ArrowDown' && patientMatches.length) {
-                        e.preventDefault()
-                        document.querySelector<HTMLElement>('#patient-suggestions [role="option"]')?.focus()
-                      }
-                      if (e.key === 'Enter' && patientMatches.length === 1) {
-                        e.preventDefault()
-                        selectPatient(patientMatches[0])
-                      }
-                    }}
-                    style={{ width: '100%', padding: '9px 12px 9px 32px', boxSizing: 'border-box', border: fieldErrors.patient ? '2px solid #c00' : '1px solid #ddd', borderRadius: 8, fontSize: 14, fontFamily: 'inherit' }}
-                  />
-                </div>
-                <ul
-                    id="patient-suggestions"
-                    role="listbox"
-                    aria-label="Client suggestions"
-                    aria-hidden="true"
-                    style={{ display: patientMatches.length > 0 ? 'block' : 'none', position: 'absolute', left: 16, right: 16, zIndex: 200, background: '#fff', border: '1px solid #ccc', borderRadius: 6, marginTop: 2, padding: 0, listStyle: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', maxHeight: 200, overflowY: 'auto' }}
-                  >
-                    {patientMatches.map((name, idx) => (
-                      <li
-                        key={name}
-                        role="option"
-                        tabIndex={0}
-                        aria-selected={false}
-                        onClick={() => { selectPatient(name) }}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(name) }
-                          else if (e.key === 'ArrowDown') { e.preventDefault(); document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx + 1]?.focus() }
-                          else if (e.key === 'ArrowUp') { e.preventDefault(); idx === 0 ? document.getElementById('patient-search')?.focus() : document.querySelectorAll<HTMLElement>('#patient-suggestions [role="option"]')[idx - 1]?.focus() }
-                          else if (e.key === 'Escape') setPatientQuery('')
-                        }}
-                        style={{ padding: '9px 14px', cursor: 'pointer', fontSize: 14, color: '#222' }}
-                        onMouseEnter={e => (e.currentTarget.style.background = '#f0faf9')}
-                        onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
-                        onFocus={e => { e.currentTarget.style.background = '#f0faf9'; e.currentTarget.style.outline = `2px solid ${TEAL}`; e.currentTarget.style.outlineOffset = '-2px' }}
-                        onBlur={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.outline = 'none' }}
-                      >
-                        {name}
-                      </li>
-                    ))}
-                  </ul>
-                {patientQuery.length >= 2 && patientMatches.length === 0 && (
-                  <p role="status" style={{ fontSize: 13, color: '#888', fontStyle: 'italic', margin: '6px 0 0' }}>No clients found for "{patientQuery}"</p>
-                )}
-                {!patient && patientQuery.length === 0 && (
-                  <p style={{ fontSize: 13, color: '#aaa', fontStyle: 'italic', margin: '8px 0 0' }}>No client selected...</p>
-                )}
-                {fieldErrors.patient && (
-                  <p id="error-patient" role="alert" style={{ margin: '6px 0 0', fontSize: 13, color: '#c00', display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <span aria-hidden="true">⚠</span>{fieldErrors.patient}
-                  </p>
-                )}
-            </div>{/* end search UI wrapper */}
           </div>
 
           {/* Packages & Memberships */}
