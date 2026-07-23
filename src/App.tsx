@@ -229,7 +229,6 @@ function BookingPanel({
   const treatmentRef = useRef<HTMLSelectElement>(null)
   const packagesRef = useRef<HTMLDivElement>(null)
   const patientInfoRef = useRef<HTMLDivElement>(null)
-  const removePatientRef = useRef<HTMLButtonElement>(null)
   const focusSinkRef = useRef<HTMLDivElement>(null)
 
   // Build time options in 15-min increments from startHour up to (but not including) availableUntil
