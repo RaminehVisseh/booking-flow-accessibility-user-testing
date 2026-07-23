@@ -707,7 +707,7 @@ function BookingPanel({
             <label aria-hidden="true" style={{ display: 'block', fontSize: 15, fontWeight: 600, color: '#444', marginBottom: 8 }}>Notes</label>
             <textarea
               aria-label="Notes. Write a note"
-              aria-roledescription={"​"}
+              role="textbox"
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Write a note"
