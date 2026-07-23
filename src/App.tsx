@@ -807,7 +807,7 @@ function ConfirmedPanel({
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #e8e8e8' }}>
-          <button ref={headingRef as unknown as React.RefObject<HTMLButtonElement>} aria-roledescription={"\u200B"} aria-label="Appointment" style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1a1a1a', borderRadius: 4, background: 'none', border: 'none', padding: 0, cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}><span aria-hidden="true">Appointment</span></button>
+          <button ref={headingRef as unknown as React.RefObject<HTMLButtonElement>} aria-roledescription={"\u200B"} aria-label="Appointment panel. Use Tab to navigate booking details, Arrive, No Show, and Pay actions." style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1a1a1a', borderRadius: 4, background: 'none', border: 'none', padding: 0, cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}><span aria-hidden="true">Appointment</span></button>
           <button aria-label="Close appointment" onClick={onClose}
             style={{ background: '#f2f2f2', border: 'none', borderRadius: 6, width: 32, height: 32, cursor: 'pointer', fontSize: 15, color: '#555', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
