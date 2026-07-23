@@ -815,12 +815,11 @@ function ConfirmedPanel({
         {/* Action buttons */}
         <div style={{ display: 'flex', gap: 8, padding: '10px 16px', borderBottom: '1px solid #e8e8e8' }}>
           <button
-            aria-label={arrived ? 'Arrived, appointment marked as arrived' : 'Mark as Arrived'}
-            aria-pressed={arrived}
+            aria-label={arrived ? 'Arrive button, appointment marked as arrived' : 'Arrive button, mark as arrived'}
             onClick={() => { setArrived(true); onArrive?.() }}
             style={{ padding: '7px 16px', border: arrived ? 'none' : '1px solid #ccc', borderRadius: 6, background: arrived ? '#8CC27F' : '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: arrived ? '#fff' : '#333' }}
           >Arrive</button>
-          <button aria-label="Mark as No Show" style={{ padding: '7px 16px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#333' }}>No Show</button>
+          <button aria-label="No Show button, mark as No Show" style={{ padding: '7px 16px', border: '1px solid #ccc', borderRadius: 6, background: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', color: '#333' }}>No Show</button>
           <button disabled tabIndex={-1} aria-disabled="true" aria-label="Pay, currently unavailable" style={{ marginLeft: 'auto', padding: '7px 16px', border: '1px solid #ddd', borderRadius: 6, background: '#f5f5f5', fontSize: 13, fontWeight: 500, cursor: 'not-allowed', fontFamily: 'inherit', color: '#aaa' }}>Pay ▾</button>
         </div>
 
