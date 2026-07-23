@@ -484,7 +484,7 @@ function BookingPanel({
                   <input
                     id="patient-search"
                     ref={patientSearchRef}
-                    type="search"
+                    type="text"
                     autoComplete="off"
                     aria-autocomplete="list"
                     aria-invalid={!!fieldErrors.patient}
@@ -565,9 +565,8 @@ function BookingPanel({
                     aria-label={`${patient}. Email ${info.email}. Phone ${info.phone}. Mobile ${info.mobile}. Born ${info.dob}. ${info.upcomingAppts} upcoming appointments. ${info.creditCard}. Last visit ${info.lastVisit}. Account balance ${info.accountBalance}.${info.noShows > 0 ? ` ${info.noShows} no show${info.noShows > 1 ? 's' : ''}.` : ''}`}
                     style={{ display: 'block', width: '100%', border: 'none', padding: 0, fontSize: 13, lineHeight: 1.6, color: '#333', background: 'transparent', cursor: 'default', fontFamily: 'inherit', textAlign: 'left' }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <div style={{ marginBottom: 4 }}>
                       <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#1a1a1a' }} aria-hidden="true">{patient}</p>
-                      <button type="button" ref={removePatientRef} aria-label={`Remove ${patient}`} onClick={e => { e.stopPropagation(); setPatient(''); setPatientQuery(''); setInsuranceChoice('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: 16, padding: 0, lineHeight: 1 }}>✕</button>
                     </div>
                     <p style={{ margin: '0 0 4px', display: 'none' }} aria-hidden="true">{patient}</p>
                     <p style={{ margin: '0 0 2px' }} aria-hidden="true"><span aria-hidden="true">✉ </span><span style={{ color: TEAL }}>{info.email}</span></p>
