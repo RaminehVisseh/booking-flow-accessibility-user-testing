@@ -553,7 +553,7 @@ function BookingPanel({
             </div>{/* end search UI wrapper */}
 
             {/* Patient selected row — always block, height:0 when empty so NVDA sees no structural change */}
-            <div style={{ height: patient ? 'auto' : 0, overflow: 'hidden' }}>
+            <div style={{ height: patient ? 'auto' : 0, overflow: 'hidden', marginTop: patient ? 12 : 0 }}>
               {(() => {
                 const info = MOCK_PATIENT_INFO[patient] ?? DEFAULT_PATIENT_INFO
                 return (
